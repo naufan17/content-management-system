@@ -1,0 +1,7 @@
+swagger: 2.0
+info:
+  title: Content Management System API
+  version: 1.2.0
+  description: A simple content management system API for managing news
+host: localhost:8080
+basePath: /
