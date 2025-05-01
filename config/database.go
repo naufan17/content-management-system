@@ -73,6 +73,7 @@ func MigrateDB(db *gorm.DB) {
 
 func SeedAll(db *gorm.DB) {
 	seeders.SeedUsers(db)
+	seeders.SeedCategories(db)
 
 	log.Println("Database seeded successfully")
 }
