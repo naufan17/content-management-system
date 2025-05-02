@@ -1,15 +1,14 @@
 package handlers
 
 import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/naufan17/content-management-system/config"
 	"github.com/naufan17/content-management-system/internal/dtos"
 	"github.com/naufan17/content-management-system/internal/services"
 	"github.com/naufan17/content-management-system/pkg/util"
-
-	"github.com/gin-gonic/gin"
-
-	"net/http"
 )
 
 func Login(c *gin.Context) {

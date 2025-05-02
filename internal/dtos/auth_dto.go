@@ -1,7 +1,7 @@
 package dtos
 
 type LoginDto struct {
-	Username string `json:"username" validate:"required"`
+	Username string `json:"username" validate:"required,max=50"`
 	Password string `json:"password" validate:"required,min=10"`
 }
 

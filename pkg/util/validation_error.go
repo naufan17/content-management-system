@@ -10,12 +10,14 @@ func ParseValidationError(err validator.ValidationErrors) map[string]string {
 		case "Name":
 			if v.Tag() == "required" {
 				errorMessage[v.Field()] = "name is required"
+			} else if v.Tag() == "max" {
+				errorMessage[v.Field()] = "name must be at most 50 characters"
 			}
 		case "Username":
 			if v.Tag() == "required" {
 				errorMessage[v.Field()] = "username is required"
-			} else if v.Tag() == "username" {
-				errorMessage[v.Field()] = "username is invalid"
+			} else if v.Tag() == "max" {
+				errorMessage[v.Field()] = "username must be at most 50 characters"
 			}
 		case "Password":
 			if v.Tag() == "required" {
