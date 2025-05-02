@@ -1,4 +1,4 @@
-package auth
+package utils
 
 import (
 	"strconv"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/google/uuid"
-	"github.com/naufan17/content-management-system/config"
+	"github.com/naufan17/content-management-system/pkg/config"
 )
 
 var (
@@ -21,7 +21,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateJWTAccess(id uuid.UUID) (string, int64, string, error) {
+func GenerateJWT(id uuid.UUID) (string, int64, string, error) {
 	expirationTime := time.Now().Add(time.Duration(jwtAccessExp) * time.Millisecond)
 
 	claims := &Claims{
@@ -43,20 +43,16 @@ func GenerateJWTAccess(id uuid.UUID) (string, int64, string, error) {
 	return tokenString, expirationTime.Unix(), "Bearer", nil
 }
 
-func ValidateJWTAccess(tokenString string) (*Claims, error) {
+func ValidateJWT(tokenString string) (*Claims, error) {
 	claims := &Claims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
 		return jwtAccessSecret, nil
 	})
 
-	if err != nil {
-		return nil, err
+	if claims, ok := token.Claims.(*Claims); !ok && !token.Valid {
+		return claims, nil
 	}
 
-	if !token.Valid {
-		return nil, jwt.ErrSignatureInvalid
-	}
-
-	return claims, nil
+	return nil, err
 }

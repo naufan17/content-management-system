@@ -1,32 +1,32 @@
-package handlers
+package category
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
-	"github.com/naufan17/content-management-system/config"
-	"github.com/naufan17/content-management-system/internal/dtos"
-	"github.com/naufan17/content-management-system/internal/services"
-	"github.com/naufan17/content-management-system/pkg/util"
+
+	"github.com/naufan17/content-management-system/pkg/config"
+	"github.com/naufan17/content-management-system/pkg/utils"
 )
 
-func GetCategories(c *gin.Context) {
-	categories, err := services.GetCategories()
+type Handler struct {
+	categoryService CategoryService
+}
+
+func NewHandler(categoryService CategoryService) *Handler {
+	return &Handler{
+		categoryService: categoryService,
+	}
+}
+
+func (h *Handler) GetCategories(c *gin.Context) {
+	categories, err := h.categoryService.GetCategories()
 
 	if err != nil {
-		if err.Error() == "record not found" {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "categories not found",
-			})
-
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to get categories",
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "categories not found",
 		})
 
 		return
@@ -37,7 +37,7 @@ func GetCategories(c *gin.Context) {
 	})
 }
 
-func GetCategory(c *gin.Context) {
+func (h *Handler) GetCategory(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -49,19 +49,11 @@ func GetCategory(c *gin.Context) {
 		return
 	}
 
-	category, err := services.GetCategory(uuidID)
+	category, err := h.categoryService.GetCategory(uuidID)
 
 	if err != nil {
-		if err.Error() == "record not found" {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "category not found",
-			})
-
-			return
-		}
-
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to get category",
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "category not found",
 		})
 
 		return
@@ -72,8 +64,8 @@ func GetCategory(c *gin.Context) {
 	})
 }
 
-func CreateCategory(c *gin.Context) {
-	var category dtos.CreateCategoryDto
+func (h *Handler) CreateCategory(c *gin.Context) {
+	var category CreateCategoryDto
 
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -84,7 +76,7 @@ func CreateCategory(c *gin.Context) {
 	}
 
 	if validatorErr := config.GetValidator().Struct(category); validatorErr != nil {
-		errors := util.ParseValidationError(validatorErr.(validator.ValidationErrors))
+		errors := utils.ParseValidationError(validatorErr.(validator.ValidationErrors))
 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": errors,
@@ -93,18 +85,10 @@ func CreateCategory(c *gin.Context) {
 		return
 	}
 
-	_, err := services.CreateCategory(category)
+	err := h.categoryService.CreateCategory(category)
 
 	if err != nil {
-		if err.Error() == "internal server error" {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"error": "failed to create category",
-			})
-
-			return
-		}
-
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "failed to create category",
 		})
 
@@ -116,7 +100,7 @@ func CreateCategory(c *gin.Context) {
 	})
 }
 
-func UpdateCategory(c *gin.Context) {
+func (h *Handler) UpdateCategory(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -128,7 +112,7 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	var category dtos.UpdateCategoryDto
+	var category UpdateCategoryDto
 
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -139,7 +123,7 @@ func UpdateCategory(c *gin.Context) {
 	}
 
 	if validatorErr := config.GetValidator().Struct(category); validatorErr != nil {
-		errors := util.ParseValidationError(validatorErr.(validator.ValidationErrors))
+		errors := utils.ParseValidationError(validatorErr.(validator.ValidationErrors))
 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": errors,
@@ -148,18 +132,16 @@ func UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	_, err = services.UpdateCategory(uuidID, category)
+	err = h.categoryService.UpdateCategory(uuidID, category)
 
 	if err != nil {
-		fmt.Println(err.Error())
-		if err.Error() == "record not found" {
+		if err.Error() == "not found" {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": "category not found",
 			})
 
 			return
 		}
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "failed to update category",
 		})
@@ -172,7 +154,7 @@ func UpdateCategory(c *gin.Context) {
 	})
 }
 
-func DeleteCategory(c *gin.Context) {
+func (h *Handler) DeleteCategory(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -184,18 +166,16 @@ func DeleteCategory(c *gin.Context) {
 		return
 	}
 
-	err = services.DeleteCategory(uuidID)
+	err = h.categoryService.DeleteCategory(uuidID)
 
 	if err != nil {
-		fmt.Println(err.Error())
-		if err.Error() == "record not found" {
+		if err.Error() == "not found" {
 			c.JSON(http.StatusNotFound, gin.H{
 				"error": "category not found",
 			})
 
 			return
 		}
-
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "failed to delete category",
 		})

@@ -1,14 +1,11 @@
 package config
 
 import (
+	"log"
 	"strconv"
 
-	"github.com/naufan17/content-management-system/database/seeders"
-	"github.com/naufan17/content-management-system/internal/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-
-	"log"
 )
 
 var DB *gorm.DB
@@ -61,19 +58,19 @@ func ConnectDB() *gorm.DB {
 	return db
 }
 
-func MigrateDB(db *gorm.DB) {
-	err := db.AutoMigrate(&models.User{}, &models.Page{}, &models.Category{}, &models.News{}, &models.Comment{})
+// func MigrateDB(db *gorm.DB) {
+// 	err := db.AutoMigrate(User{}, Page{}, Category{}, News{}, Comment{})
 
-	if err != nil {
-		log.Fatal("Failed to migrate database", err)
-	} else {
-		log.Println("Database migrated successfully")
-	}
-}
+// 	if err != nil {
+// 		log.Fatal("Failed to migrate database", err)
+// 	} else {
+// 		log.Println("Database migrated successfully")
+// 	}
+// }
 
-func SeedAll(db *gorm.DB) {
-	seeders.SeedUsers(db)
-	seeders.SeedCategories(db)
+// func SeedAll(db *gorm.DB) {
+// 	seeders.SeedUsers(db)
+// 	seeders.SeedCategories(db)
 
-	log.Println("Database seeded successfully")
-}
+// 	log.Println("Database seeded successfully")
+// }

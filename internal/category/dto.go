@@ -1,8 +1,7 @@
-package dtos
+package category
 
 import (
 	"github.com/google/uuid"
-	"github.com/naufan17/content-management-system/internal/models"
 )
 
 type CategoryDto struct {
@@ -18,21 +17,21 @@ type UpdateCategoryDto struct {
 	Name string `json:"name" validate:"required,max=50"`
 }
 
-func CategoryModelToDto(category models.Category) CategoryDto {
+func CategoryModelToDto(category Category) CategoryDto {
 	return CategoryDto{
 		ID:   category.ID,
 		Name: category.Name,
 	}
 }
 
-func CreateCategoryDtoToModel(category CreateCategoryDto) models.Category {
-	return models.Category{
+func CreateCategoryDtoToModel(category CreateCategoryDto) Category {
+	return Category{
 		Name: category.Name,
 	}
 }
 
-func UpdateCategoryDtoToModel(category UpdateCategoryDto) models.Category {
-	return models.Category{
+func UpdateCategoryDtoToModel(category UpdateCategoryDto) Category {
+	return Category{
 		Name: category.Name,
 	}
 }

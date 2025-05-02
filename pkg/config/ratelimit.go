@@ -30,7 +30,7 @@ func SetupRateLimit(router *gin.Engine) {
 	router.Use(func(c *gin.Context) {
 		if !limiter.Allow() {
 			c.JSON(http.StatusTooManyRequests, gin.H{
-				"error": "Too many requests, please try again later",
+				"error": "too many requests, please try again later",
 			})
 
 			c.Abort()

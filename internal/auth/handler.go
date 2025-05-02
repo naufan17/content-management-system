@@ -1,18 +1,27 @@
-package handlers
+package auth
 
 import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/naufan17/content-management-system/config"
-	"github.com/naufan17/content-management-system/internal/dtos"
-	"github.com/naufan17/content-management-system/internal/services"
-	"github.com/naufan17/content-management-system/pkg/util"
+
+	"github.com/naufan17/content-management-system/pkg/config"
+	"github.com/naufan17/content-management-system/pkg/utils"
 )
 
-func Login(c *gin.Context) {
-	var user dtos.LoginDto
+type Handler struct {
+	authService AuthService
+}
+
+func NewHandler(authService AuthService) *Handler {
+	return &Handler{
+		authService: authService,
+	}
+}
+
+func (h *Handler) Login(c *gin.Context) {
+	var user LoginDto
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -23,7 +32,7 @@ func Login(c *gin.Context) {
 	}
 
 	if validatorErr := config.GetValidator().Struct(user); validatorErr != nil {
-		errors := util.ParseValidationError(validatorErr.(validator.ValidationErrors))
+		errors := utils.ParseValidationError(validatorErr.(validator.ValidationErrors))
 
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": errors,
@@ -32,7 +41,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := services.LoginUser(user)
+	accessToken, err := h.authService.LoginUser(user)
 
 	if err != nil {
 		if err.Error() == "unauthorized" {
@@ -58,8 +67,6 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "failed to login user",
 		})
-
-		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{

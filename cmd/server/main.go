@@ -1,14 +1,16 @@
 package main
 
 import (
-	"github.com/naufan17/content-management-system/config"
-	routes "github.com/naufan17/content-management-system/route"
+	"github.com/naufan17/content-management-system/internal/auth"
+	"github.com/naufan17/content-management-system/internal/category"
+	"github.com/naufan17/content-management-system/pkg/config"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	cfg := config.LoadConfig()
+	db := config.ConnectDB()
 	env := cfg.GinMode
 	port := cfg.Port
 	router := gin.Default()
@@ -25,7 +27,17 @@ func main() {
 	config.SetupCORS(router)
 	config.SetupRateLimit(router)
 
-	routes.ApiRoutes(router)
+	// Auth module
+	authRepo := auth.NewUserRepository(db)
+	authService := auth.NewAuthService(authRepo)
+	authHandler := auth.NewHandler(authService)
+	auth.AuthRoute(router, authHandler)
+
+	// Category module
+	categoryRepo := category.NewCategoryRepository(db)
+	categoryService := category.NewCategoryService(categoryRepo)
+	categoryHandler := category.NewHandler(categoryService)
+	category.CategoryRoute(router, categoryHandler)
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
