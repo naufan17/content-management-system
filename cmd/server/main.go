@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/naufan17/content-management-system/config"
-	routes "github.com/naufan17/content-management-system/route"
+	"github.com/naufan17/content-management-system/route"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,7 +25,7 @@ func main() {
 	config.SetupCORS(router)
 	config.SetupRateLimit(router)
 
-	routes.RegisterRoutes(router)
+	route.RegisterRoutes(router)
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
