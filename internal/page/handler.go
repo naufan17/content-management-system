@@ -1,4 +1,4 @@
-package news
+package page
 
 import (
 	"net/http"
@@ -12,66 +12,68 @@ import (
 )
 
 type Handler struct {
-	newsService NewsService
+	pageService PageService
 }
 
-func NewHandler(newsService NewsService) *Handler {
-	return &Handler{newsService: newsService}
+func NewHandler(pageService PageService) *Handler {
+	return &Handler{pageService: pageService}
 }
 
-func (h *Handler) GetNews(c *gin.Context) {
-	news, err := h.newsService.GetNews()
+func (h *Handler) GetPages(c *gin.Context) {
+	pages, err := h.pageService.GetPages()
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "news not found",
+			"error": "pages not found",
 		})
 
 		return
-	} else if len(news) == 0 {
+	} else if len(pages) == 0 {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "news not found",
+			"error": "pages not found",
 		})
 
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": news,
+		"data": pages,
 	})
 }
 
-func (h *Handler) GetNewsByID(c *gin.Context) {
+func (h *Handler) GetPage(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid news ID format",
+			"error": "invalid page ID format",
 		})
 
 		return
 	}
 
-	news, err := h.newsService.GetNewsByID(uuidID)
+	page, err := h.pageService.GetPage(uuidID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"error": "news not found",
+			"error": "page not found",
 		})
 
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": news,
+		"data": page,
 	})
 }
 
-func (h *Handler) CreateNews(c *gin.Context) {
-	var news CreateNewsRequest
+func (h *Handler) CreatePage(c *gin.Context) {
+	var page CreatePageRequest
 
-	if err := c.ShouldBindJSON(&news); err != nil {
+	err := c.ShouldBindJSON(&page)
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid request body",
 		})
@@ -79,7 +81,7 @@ func (h *Handler) CreateNews(c *gin.Context) {
 		return
 	}
 
-	if validatorErr := config.GetValidator().Struct(news); validatorErr != nil {
+	if validatorErr := config.GetValidator().Struct(page); validatorErr != nil {
 		errors := utils.ParseValidationError(validatorErr.(validator.ValidationErrors))
 
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -90,37 +92,39 @@ func (h *Handler) CreateNews(c *gin.Context) {
 	}
 
 	claimUser := c.MustGet("claimsUser").(*utils.Claims)
-	news.UserID = claimUser.Sub
-	err := h.newsService.CreateNews(news)
+	page.UserID = claimUser.Sub
+	err = h.pageService.CreatePage(page)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to create news",
+			"error": "failed to create page",
 		})
 
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "news created successfully",
+		"message": "page created successfully",
 	})
 }
 
-func (h *Handler) UpdateNews(c *gin.Context) {
+func (h *Handler) UpdatePage(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid news ID format",
+			"error": "invalid page ID format",
 		})
 
 		return
 	}
 
-	var news UpdateNewsRequest
+	var page UpdatePageRequest
 
-	if err := c.ShouldBindJSON(&news); err != nil {
+	err = c.ShouldBindJSON(&page)
+
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid request body",
 		})
@@ -128,7 +132,7 @@ func (h *Handler) UpdateNews(c *gin.Context) {
 		return
 	}
 
-	if validatorErr := config.GetValidator().Struct(news); validatorErr != nil {
+	if validatorErr := config.GetValidator().Struct(page); validatorErr != nil {
 		errors := utils.ParseValidationError(validatorErr.(validator.ValidationErrors))
 
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -149,29 +153,29 @@ func (h *Handler) UpdateNews(c *gin.Context) {
 		return
 	}
 
-	news.UserID = parsedUserID
-	err = h.newsService.UpdateNews(uuidID, news)
+	page.UserID = parsedUserID
+	err = h.pageService.UpdatePage(uuidID, page)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to update news",
+			"error": "failed to update page",
 		})
 
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "news updated successfully",
+		"message": "page updated successfully",
 	})
 }
 
-func (h *Handler) DeleteNews(c *gin.Context) {
+func (h *Handler) DeletePage(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "invalid news ID format",
+			"error": "invalid page ID format",
 		})
 
 		return
@@ -188,24 +192,17 @@ func (h *Handler) DeleteNews(c *gin.Context) {
 		return
 	}
 
-	err = h.newsService.DeleteNews(uuidID, parsedUserID)
+	err = h.pageService.DeletePage(uuidID, parsedUserID)
 
 	if err != nil {
-		if err.Error() == "not found" {
-			c.JSON(http.StatusNotFound, gin.H{
-				"error": "news not found",
-			})
-
-			return
-		}
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to delete news",
+			"error": "failed to delete page",
 		})
 
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "news deleted successfully",
+		"message": "page deleted successfully",
 	})
 }

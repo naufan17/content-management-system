@@ -4,6 +4,7 @@ import (
 	"github.com/naufan17/content-management-system/internal/auth"
 	"github.com/naufan17/content-management-system/internal/category"
 	"github.com/naufan17/content-management-system/internal/news"
+	"github.com/naufan17/content-management-system/internal/page"
 	"github.com/naufan17/content-management-system/pkg/config"
 
 	"github.com/gin-gonic/gin"
@@ -45,6 +46,12 @@ func main() {
 	newsService := news.NewNewsService(newsRepo)
 	newsHandler := news.NewHandler(newsService)
 	news.NewsRoute(router, newsHandler)
+
+	// Page module
+	pageRepo := page.NewPageRepository(db)
+	pageService := page.NewPageService(pageRepo)
+	pageHandler := page.NewHandler(pageService)
+	page.PageRoute(router, pageHandler)
 
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())

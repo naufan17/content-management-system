@@ -10,8 +10,8 @@ func NewsRoute(r *gin.Engine, h *Handler) {
 	{
 		api.GET("/", h.GetNews)
 		api.GET("/:id", h.GetNewsByID)
-		api.POST("/", middleware.AuthorizeBearer(), h.CreateNews)
-		api.PUT("/:id", middleware.AuthorizeBearer(), h.UpdateNews)
-		api.DELETE("/:id", middleware.AuthorizeBearer(), h.DeleteNews)
+		api.POST("/", middleware.AuthorizeBearer, h.CreateNews)
+		api.PUT("/:id", middleware.AuthorizeBearer, h.UpdateNews)
+		api.DELETE("/:id", middleware.AuthorizeBearer, h.DeleteNews)
 	}
 }

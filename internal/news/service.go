@@ -61,13 +61,13 @@ func (s *newsService) CreateNews(news CreateNewsRequest) error {
 }
 
 func (s *newsService) UpdateNews(id uuid.UUID, news UpdateNewsRequest) error {
-	newFromDb, err := s.newsRepository.FindByID(id)
+	newsFromDb, err := s.newsRepository.FindByID(id)
 
 	if err != nil {
 		return errors.New("not found")
 	}
 
-	if newFromDb.UserID != news.UserID {
+	if newsFromDb.UserID != news.UserID {
 		return errors.New("not authorized")
 	}
 

@@ -10,8 +10,8 @@ func CategoryRoute(r *gin.Engine, h *Handler) {
 	{
 		api.GET("/", h.GetCategories)
 		api.GET("/:id", h.GetCategory)
-		api.POST("/", middleware.AuthorizeBearer(), h.CreateCategory)
-		api.PUT("/:id", middleware.AuthorizeBearer(), h.UpdateCategory)
-		api.DELETE("/:id", middleware.AuthorizeBearer(), h.DeleteCategory)
+		api.POST("/", middleware.AuthorizeBearer, h.CreateCategory)
+		api.PUT("/:id", middleware.AuthorizeBearer, h.UpdateCategory)
+		api.DELETE("/:id", middleware.AuthorizeBearer, h.DeleteCategory)
 	}
 }

@@ -16,9 +16,7 @@ type Handler struct {
 }
 
 func NewHandler(categoryService CategoryService) *Handler {
-	return &Handler{
-		categoryService: categoryService,
-	}
+	return &Handler{categoryService: categoryService}
 }
 
 func (h *Handler) GetCategories(c *gin.Context) {
