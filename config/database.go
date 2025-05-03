@@ -4,12 +4,9 @@ import (
 	"log"
 	"strconv"
 
-	// "github.com/naufan17/content-management-system/database/seeders"
-	// "github.com/naufan17/content-management-system/internal/auth"
-	// "github.com/naufan17/content-management-system/internal/category"
-	// "github.com/naufan17/content-management-system/internal/comment"
-	// "github.com/naufan17/content-management-system/internal/news"
-	// "github.com/naufan17/content-management-system/internal/page"
+	"github.com/naufan17/content-management-system/database/seeders"
+	"github.com/naufan17/content-management-system/internal/model"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -66,23 +63,23 @@ func ConnectDB() *gorm.DB {
 
 func MigrateDB(db *gorm.DB) {
 	err := db.AutoMigrate(
-		&auth.User{},
-		&category.Category{},
-		&page.Page{},
-		&news.News{},
-		&comment.Comment{},
+		&model.User{},
+		&model.Category{},
+		&model.Page{},
+		&model.News{},
+		&model.Comment{},
 	)
 
-// 	if err != nil {
-// 		log.Fatal("Failed to migrate database", err)
-// 	} else {
-// 		log.Println("Database migrated successfully")
-// 	}
-// }
+	if err != nil {
+		log.Fatal("Failed to migrate database", err)
+	} else {
+		log.Println("Database migrated successfully")
+	}
+}
 
-// func SeedAll(db *gorm.DB) {
-// 	seeders.SeedUsers(db)
-// 	seeders.SeedCategories(db)
+func SeedAll(db *gorm.DB) {
+	seeders.SeedUsers(db)
+	seeders.SeedCategories(db)
 
-// 	log.Println("Database seeded successfully")
-// }
+	log.Println("Database seeded successfully")
+}

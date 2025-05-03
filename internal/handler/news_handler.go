@@ -1,4 +1,4 @@
-package news
+package handler
 
 import (
 	"net/http"
@@ -8,19 +8,13 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/naufan17/content-management-system/config"
+	"github.com/naufan17/content-management-system/internal/dto"
+	"github.com/naufan17/content-management-system/internal/service"
 	"github.com/naufan17/content-management-system/pkg/utils"
 )
 
-type Handler struct {
-	newsService NewsService
-}
-
-func NewHandler(newsService NewsService) *Handler {
-	return &Handler{newsService: newsService}
-}
-
-func (h *Handler) GetNews(c *gin.Context) {
-	news, err := h.newsService.GetNews()
+func GetNews(c *gin.Context) {
+	news, err := service.GetNews()
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -41,7 +35,7 @@ func (h *Handler) GetNews(c *gin.Context) {
 	})
 }
 
-func (h *Handler) GetNewsByID(c *gin.Context) {
+func GetNewsByID(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -53,7 +47,7 @@ func (h *Handler) GetNewsByID(c *gin.Context) {
 		return
 	}
 
-	news, err := h.newsService.GetNewsByID(uuidID)
+	news, err := service.GetNewsByID(uuidID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -68,8 +62,8 @@ func (h *Handler) GetNewsByID(c *gin.Context) {
 	})
 }
 
-func (h *Handler) CreateNews(c *gin.Context) {
-	var news CreateNewsRequest
+func CreateNews(c *gin.Context) {
+	var news dto.CreateNewsRequest
 
 	if err := c.ShouldBindJSON(&news); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -89,9 +83,11 @@ func (h *Handler) CreateNews(c *gin.Context) {
 		return
 	}
 
-	claimUser := c.MustGet("claimsUser").(*utils.Claims)
-	news.UserID = claimUser.Sub
-	err := h.newsService.CreateNews(news)
+	claimsUser := c.MustGet("claimsUser").(*utils.Claims)
+	userID := claimsUser.Sub
+
+	news.UserID = userID
+	err := service.CreateNews(news)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -106,7 +102,7 @@ func (h *Handler) CreateNews(c *gin.Context) {
 	})
 }
 
-func (h *Handler) UpdateNews(c *gin.Context) {
+func UpdateNews(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -118,7 +114,7 @@ func (h *Handler) UpdateNews(c *gin.Context) {
 		return
 	}
 
-	var news UpdateNewsRequest
+	var news dto.UpdateNewsRequest
 
 	if err := c.ShouldBindJSON(&news); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -150,7 +146,7 @@ func (h *Handler) UpdateNews(c *gin.Context) {
 	}
 
 	news.UserID = parsedUserID
-	err = h.newsService.UpdateNews(uuidID, news)
+	err = service.UpdateNews(uuidID, news)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -165,7 +161,7 @@ func (h *Handler) UpdateNews(c *gin.Context) {
 	})
 }
 
-func (h *Handler) DeleteNews(c *gin.Context) {
+func DeleteNews(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -188,7 +184,7 @@ func (h *Handler) DeleteNews(c *gin.Context) {
 		return
 	}
 
-	err = h.newsService.DeleteNews(uuidID, parsedUserID)
+	err = service.DeleteNews(uuidID, parsedUserID)
 
 	if err != nil {
 		if err.Error() == "not found" {

@@ -1,4 +1,4 @@
-package page
+package handler
 
 import (
 	"net/http"
@@ -8,19 +8,13 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/naufan17/content-management-system/config"
+	"github.com/naufan17/content-management-system/internal/dto"
+	"github.com/naufan17/content-management-system/internal/service"
 	"github.com/naufan17/content-management-system/pkg/utils"
 )
 
-type Handler struct {
-	pageService PageService
-}
-
-func NewHandler(pageService PageService) *Handler {
-	return &Handler{pageService: pageService}
-}
-
-func (h *Handler) GetPages(c *gin.Context) {
-	pages, err := h.pageService.GetPages()
+func GetPages(c *gin.Context) {
+	pages, err := service.GetPages()
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -41,7 +35,7 @@ func (h *Handler) GetPages(c *gin.Context) {
 	})
 }
 
-func (h *Handler) GetPage(c *gin.Context) {
+func GetPage(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -53,7 +47,7 @@ func (h *Handler) GetPage(c *gin.Context) {
 		return
 	}
 
-	page, err := h.pageService.GetPage(uuidID)
+	page, err := service.GetPage(uuidID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -68,8 +62,8 @@ func (h *Handler) GetPage(c *gin.Context) {
 	})
 }
 
-func (h *Handler) CreatePage(c *gin.Context) {
-	var page CreatePageRequest
+func CreatePage(c *gin.Context) {
+	var page dto.CreatePageRequest
 
 	err := c.ShouldBindJSON(&page)
 
@@ -93,7 +87,7 @@ func (h *Handler) CreatePage(c *gin.Context) {
 
 	claimUser := c.MustGet("claimsUser").(*utils.Claims)
 	page.UserID = claimUser.Sub
-	err = h.pageService.CreatePage(page)
+	err = service.CreatePage(page)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -108,7 +102,7 @@ func (h *Handler) CreatePage(c *gin.Context) {
 	})
 }
 
-func (h *Handler) UpdatePage(c *gin.Context) {
+func UpdatePage(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -120,7 +114,7 @@ func (h *Handler) UpdatePage(c *gin.Context) {
 		return
 	}
 
-	var page UpdatePageRequest
+	var page dto.UpdatePageRequest
 
 	err = c.ShouldBindJSON(&page)
 
@@ -154,7 +148,7 @@ func (h *Handler) UpdatePage(c *gin.Context) {
 	}
 
 	page.UserID = parsedUserID
-	err = h.pageService.UpdatePage(uuidID, page)
+	err = service.UpdatePage(uuidID, page)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -169,7 +163,7 @@ func (h *Handler) UpdatePage(c *gin.Context) {
 	})
 }
 
-func (h *Handler) DeletePage(c *gin.Context) {
+func DeletePage(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -192,7 +186,7 @@ func (h *Handler) DeletePage(c *gin.Context) {
 		return
 	}
 
-	err = h.pageService.DeletePage(uuidID, parsedUserID)
+	err = service.DeletePage(uuidID, parsedUserID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

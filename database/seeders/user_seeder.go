@@ -3,7 +3,7 @@ package seeders
 import (
 	"log"
 
-	"github.com/naufan17/content-management-system/internal/auth"
+	"github.com/naufan17/content-management-system/internal/model"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -15,7 +15,7 @@ func SeedUsers(db *gorm.DB) {
 		log.Fatalf("Failed to hash password: %v", err)
 	}
 
-	users := []auth.User{
+	users := []model.User{
 		{Name: "John Doe", Username: "jhon", Password: string(hashedPassword)},
 		{Name: "Jane Doe", Username: "jane", Password: string(hashedPassword)},
 		{Name: "Mark Doe", Username: "mark", Password: string(hashedPassword)},

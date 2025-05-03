@@ -1,4 +1,4 @@
-package auth
+package dto
 
 type LoginRequest struct {
 	Username string `json:"username" validate:"required,max=50"`

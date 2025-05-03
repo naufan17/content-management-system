@@ -1,4 +1,4 @@
-package category
+package handler
 
 import (
 	"net/http"
@@ -8,19 +8,13 @@ import (
 	"github.com/google/uuid"
 
 	"github.com/naufan17/content-management-system/config"
+	"github.com/naufan17/content-management-system/internal/dto"
+	"github.com/naufan17/content-management-system/internal/service"
 	"github.com/naufan17/content-management-system/pkg/utils"
 )
 
-type Handler struct {
-	categoryService CategoryService
-}
-
-func NewHandler(categoryService CategoryService) *Handler {
-	return &Handler{categoryService: categoryService}
-}
-
-func (h *Handler) GetCategories(c *gin.Context) {
-	categories, err := h.categoryService.GetCategories()
+func GetCategories(c *gin.Context) {
+	categories, err := service.GetCategories()
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -41,7 +35,7 @@ func (h *Handler) GetCategories(c *gin.Context) {
 	})
 }
 
-func (h *Handler) GetCategory(c *gin.Context) {
+func GetCategory(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -53,7 +47,7 @@ func (h *Handler) GetCategory(c *gin.Context) {
 		return
 	}
 
-	category, err := h.categoryService.GetCategory(uuidID)
+	category, err := service.GetCategory(uuidID)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -68,8 +62,8 @@ func (h *Handler) GetCategory(c *gin.Context) {
 	})
 }
 
-func (h *Handler) CreateCategory(c *gin.Context) {
-	var category CreateCategoryRequest
+func CreateCategory(c *gin.Context) {
+	var category dto.CreateCategoryRequest
 
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -89,7 +83,7 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 		return
 	}
 
-	err := h.categoryService.CreateCategory(category)
+	err := service.CreateCategory(category)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -104,7 +98,7 @@ func (h *Handler) CreateCategory(c *gin.Context) {
 	})
 }
 
-func (h *Handler) UpdateCategory(c *gin.Context) {
+func UpdateCategory(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -116,7 +110,7 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	var category UpdateCategoryRequest
+	var category dto.UpdateCategoryRequest
 
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -136,7 +130,7 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	err = h.categoryService.UpdateCategory(uuidID, category)
+	err = service.UpdateCategory(uuidID, category)
 
 	if err != nil {
 		if err.Error() == "not found" {
@@ -158,7 +152,7 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 	})
 }
 
-func (h *Handler) DeleteCategory(c *gin.Context) {
+func DeleteCategory(c *gin.Context) {
 	id := c.Param("id")
 	uuidID, err := uuid.Parse(id)
 
@@ -170,7 +164,7 @@ func (h *Handler) DeleteCategory(c *gin.Context) {
 		return
 	}
 
-	err = h.categoryService.DeleteCategory(uuidID)
+	err = service.DeleteCategory(uuidID)
 
 	if err != nil {
 		if err.Error() == "not found" {

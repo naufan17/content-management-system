@@ -1,7 +1,8 @@
-package news
+package dto
 
 import (
 	"github.com/google/uuid"
+	"github.com/naufan17/content-management-system/internal/model"
 )
 
 type NewsDto struct {
@@ -27,7 +28,7 @@ type UpdateNewsRequest struct {
 	CategoryID uuid.UUID `json:"category_id" validate:"required"`
 }
 
-func NewsModelToDto(news News) NewsDto {
+func NewsModelToDto(news model.News) NewsDto {
 	return NewsDto{
 		ID:         news.ID,
 		Title:      news.Title,
@@ -38,8 +39,8 @@ func NewsModelToDto(news News) NewsDto {
 	}
 }
 
-func CreateNewsDtoToModel(news CreateNewsRequest) News {
-	return News{
+func CreateNewsDtoToModel(news CreateNewsRequest) model.News {
+	return model.News{
 		Title:      news.Title,
 		Content:    news.Content,
 		CategoryID: news.CategoryID,
@@ -47,8 +48,8 @@ func CreateNewsDtoToModel(news CreateNewsRequest) News {
 	}
 }
 
-func UpdateNewsDtoToModel(news UpdateNewsRequest) News {
-	return News{
+func UpdateNewsDtoToModel(news UpdateNewsRequest) model.News {
+	return model.News{
 		Title:      news.Title,
 		Content:    news.Content,
 		CategoryID: news.CategoryID,

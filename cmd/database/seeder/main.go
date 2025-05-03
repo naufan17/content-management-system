@@ -1,7 +1,11 @@
 package main
 
-// func main() {
-// 	// db := config.ConnectDB()
+import (
+	"github.com/naufan17/content-management-system/config"
+)
 
-// 	// config.SeedAll(db)
-// }
+func main() {
+	db := config.ConnectDB()
+
+	config.SeedAll(db)
+}

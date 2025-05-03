@@ -1,4 +1,4 @@
-package auth
+package handler
 
 import (
 	"net/http"
@@ -7,21 +7,13 @@ import (
 	"github.com/go-playground/validator/v10"
 
 	"github.com/naufan17/content-management-system/config"
+	"github.com/naufan17/content-management-system/internal/dto"
+	"github.com/naufan17/content-management-system/internal/service"
 	"github.com/naufan17/content-management-system/pkg/utils"
 )
 
-type Handler struct {
-	authService AuthService
-}
-
-func NewHandler(authService AuthService) *Handler {
-	return &Handler{
-		authService: authService,
-	}
-}
-
-func (h *Handler) Login(c *gin.Context) {
-	var user LoginRequest
+func Login(c *gin.Context) {
+	var user dto.LoginRequest
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -41,7 +33,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	accessToken, err := h.authService.LoginUser(user)
+	accessToken, err := service.LoginUser(user)
 
 	if err != nil {
 		if err.Error() == "unauthorized" {

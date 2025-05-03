@@ -1,7 +1,8 @@
-package page
+package dto
 
 import (
 	"github.com/google/uuid"
+	"github.com/naufan17/content-management-system/internal/model"
 )
 
 type PageDto struct {
@@ -30,7 +31,7 @@ type UpdatePageRequest struct {
 	IsPublished bool      `json:"is_published" validate:"required" default:"true"`
 }
 
-func PageModelToDto(page Page) PageDto {
+func PageModelToDto(page model.Page) PageDto {
 	return PageDto{
 		ID:          page.ID,
 		Title:       page.Title,
@@ -42,8 +43,8 @@ func PageModelToDto(page Page) PageDto {
 	}
 }
 
-func CreatePageDtoToModel(page CreatePageRequest) Page {
-	return Page{
+func CreatePageDtoToModel(page CreatePageRequest) model.Page {
+	return model.Page{
 		Title:       page.Title,
 		Content:     page.Content,
 		UserID:      page.UserID,
@@ -52,8 +53,8 @@ func CreatePageDtoToModel(page CreatePageRequest) Page {
 	}
 }
 
-func UpdatePageDtoToModel(page UpdatePageRequest) Page {
-	return Page{
+func UpdatePageDtoToModel(page UpdatePageRequest) model.Page {
+	return model.Page{
 		Title:       page.Title,
 		Content:     page.Content,
 		UserID:      page.UserID,

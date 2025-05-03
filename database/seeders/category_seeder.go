@@ -3,13 +3,13 @@ package seeders
 import (
 	"log"
 
-	"github.com/naufan17/content-management-system/internal/category"
+	"github.com/naufan17/content-management-system/internal/model"
 	"gorm.io/gorm"
 )
 
 func SeedCategories(db *gorm.DB) {
 
-	categories := []category.Category{
+	categories := []model.Category{
 		{Name: "Technology"},
 		{Name: "Health"},
 		{Name: "Lifestyle"},

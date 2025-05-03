@@ -1,7 +1,9 @@
 package main
 
-// func main() {
-// 	db := config.ConnectDB()
+import "github.com/naufan17/content-management-system/config"
 
-// 	config.MigrateDB(db)
-// }
+func main() {
+	db := config.ConnectDB()
+
+	config.MigrateDB(db)
+}
