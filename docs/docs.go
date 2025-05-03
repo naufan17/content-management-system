@@ -52,19 +52,19 @@ const docTemplate = `
 				"tags": ["Auth"],
 				"parameters": [
 					{
-						"name": "username",
+						"name": "login",
 						"in": "body",
 						"required": true,
 						"schema": {
-							"type": "string"
-						}
-					},
-					{
-						"name": "password",
-						"in": "body",
-						"required": true,
-						"schema": {
-							"type": "string"
+							"type": "object",
+							"properties": {
+								"username": {
+									"type": "string"
+								},
+								"password": {
+									"type": "string"
+								}
+							}
 						}
 					}
 				],
@@ -189,6 +189,14 @@ const docTemplate = `
 				"tags": ["Category"],
 				"parameters": [
 					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
 						"name": "category",
 						"in": "body",
 						"required": true,
@@ -206,7 +214,7 @@ const docTemplate = `
 					"application/json"
 				],
 				"responses": {
-					"200": {
+					"201": {
 						"description": "Category created",
 						"schema": {
 							"type": "object",
@@ -233,6 +241,17 @@ const docTemplate = `
 								"error": {
 									"type": "string"
 								}
+							}
+						}
+					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
 							}
 						}
 					},
@@ -314,6 +333,14 @@ const docTemplate = `
 				"tags": ["Category"],
 				"parameters": [
 					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
 						"name": "id",
 						"in": "path",
 						"required": true,
@@ -355,6 +382,39 @@ const docTemplate = `
 								}
 							}
 						}
+					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"404": {
+						"description": "Category not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Error updating category",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
 					}
 				}
 			},
@@ -362,6 +422,14 @@ const docTemplate = `
 				"summary": "Delete category by id",
 				"tags": ["Category"],
 				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
 					{
 						"name": "id",
 						"in": "path",
@@ -384,6 +452,17 @@ const docTemplate = `
 							}
 						}
 					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
 					"404": {
 						"description": "Category not found",
 						"schema": {
@@ -403,6 +482,947 @@ const docTemplate = `
 								"error": {
 									"type": "string"
 								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/news": {
+			"get": {
+				"summary": "Get all news",
+				"tags": ["News"],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Get all news",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"title": {
+												"type": "string"
+											},
+											"content": {
+												"type": "string"
+											},
+											"user": {
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													}
+												}
+											},
+											"category": {
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													}
+												}
+											},
+											"created_at": {
+												"type": "string"
+											},
+											"updated_at": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "News not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Error getting news",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create new news",
+				"tags": ["News"],
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "news",
+						"in": "body",
+						"required": true,
+						"type": "object",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"title": {
+									"type": "string"
+								},
+								"content": {
+									"type": "string"
+								},
+								"category_id": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"201": {
+						"description": "news created successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "invalid request body",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "error creating news",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/news/{id}": {
+			"get": {
+				"summary": "Get news by id",
+				"tags": ["News"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Get news by id",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										},
+										"title": {
+											"type": "string"
+										},
+										"content": {
+											"type": "string"
+										},
+										"user": {
+											"type": "object",
+											"properties": {
+												"name": {
+													"type": "string"
+												}
+											}
+										},
+										"category": {
+											"type": "object",
+											"properties": {
+												"name": {
+													"type": "string"
+												}
+											}
+										},
+										"created_at": {
+											"type": "string"
+										},
+										"updated_at": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "News not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Error getting news",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"summary": "Update news by id",
+				"tags": ["News"],
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "news",
+						"in": "body",
+						"required": true,
+						"type": "object",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"title": {
+									"type": "string"
+								},
+								"content": {
+									"type": "string"
+								},
+								"category_id": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "news updated successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "invalid request body",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "error updating news",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete news by id",
+				"tags": ["News"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "news deleted successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"404": {
+						"description": "news not found",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "error deleting news",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/news/{id}/comments": {
+			"get": {
+				"summary": "Get comments by news id",
+				"tags": ["Comment"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Get comments by news id",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											},
+											"comment": {
+												"type": "string"
+											},
+											"created_at": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "invalid request body",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "error getting comments",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}							
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create comment",
+				"tags": ["Comment"],
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "comment",
+						"in": "body",
+						"required": true,
+						"type": "object",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"comment": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"201": {
+						"description": "comment created successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"message": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "invalid request body",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "error creating comment",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/pages": {
+			"get": {
+				"summary": "Get all pages",
+				"tags": ["Page"],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Get all pages",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"title": {
+												"type": "string"
+											},
+											"custom_url": {
+												"type": "string"
+											},
+											"content": {
+												"type": "string"
+											},
+											"is_published": {
+												"type": "boolean"
+											},
+											"user": {
+												"type": "object",
+												"properties": {
+													"name": {
+														"type": "string"
+													}
+												}
+											},
+											"created_at": {
+												"type": "string"
+											},
+											"updated_at": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "error getting pages",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create new page",
+				"tags": ["Page"],
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "page",
+						"in": "body",
+						"required": true,
+						"type": "object",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"title": {
+									"type": "string"
+								},
+								"custom_url": {
+									"type": "string"
+								},
+								"content": {
+									"type": "string"
+								},
+								"is_published": {
+									"type": "boolean"
+								}
+							}
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"201": {
+						"description": "page created successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "invalid request body",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "error creating page",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/pages/{id}": {
+			"get": {
+				"summary": "Get page by id",
+				"tags": ["Page"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Get page by id",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										},
+										"title": {
+											"type": "string"
+										},
+										"custom_url": {
+											"type": "string"
+										},
+										"content": {
+											"type": "string"
+										},
+										"is_published": {
+											"type": "boolean"
+										},
+										"user": {
+											"type": "object",
+											"properties": {
+												"name": {
+													"type": "string"
+												}
+											}
+										},
+										"created_at": {
+											"type": "string"
+										},
+										"updated_at": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "error getting page",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"summary": "Update page by id",
+				"tags": ["Page"],
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "page updated successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "invalid request body",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"404": {
+						"description": "not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "error updating page",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete page by id",
+				"tags": ["Page"],
+				"parameters": [
+					{
+						"name": "Authorization",
+						"in": "header",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "page deleted successfully",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"message": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"401": {
+						"description": "unauthorized",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"404": {
+						"description": "not found",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
+							}
+						}
+					},
+					"500": {
+						"description": "error deleting page",
+						"schema": {
+							"type": "object",
+						},
+						"properties": {
+							"error": {
+								"type": "string"
 							}
 						}
 					}

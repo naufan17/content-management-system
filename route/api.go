@@ -10,6 +10,8 @@ import (
 
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/naufan17/content-management-system/docs"
 )
 
 func RegisterRoutes(router *gin.Engine) {
