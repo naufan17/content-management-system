@@ -35,3 +35,37 @@ func AuthorizeBearer(c *gin.Context) {
 	c.Set("claimsUser", claims)
 	c.Next()
 }
+
+func AuthorizeOptionalBearer(c *gin.Context) {
+	authHeader := c.GetHeader("Authorization")
+
+	if authHeader == "" {
+		c.Next()
+
+		return
+	}
+
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid authorization header format",
+		})
+
+		c.Abort()
+		return
+	}
+
+	token := strings.TrimPrefix(authHeader, "Bearer ")
+	claims, err := utils.ValidateJWT(token)
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "invalid token",
+		})
+
+		c.Abort()
+		return
+	}
+
+	c.Set("claimsUser", claims)
+	c.Next()
+}

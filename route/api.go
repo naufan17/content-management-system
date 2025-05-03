@@ -36,6 +36,12 @@ func RegisterRoutes(router *gin.Engine) {
 			news.POST("/", middleware.AuthorizeBearer, handler.CreateNews)
 			news.PUT("/:id", middleware.AuthorizeBearer, handler.UpdateNews)
 			news.DELETE("/:id", middleware.AuthorizeBearer, handler.DeleteNews)
+
+			comment := news.Group("/:id/comments")
+			{
+				comment.GET("/", handler.GetCommentsByNewsID)
+				comment.POST("/", middleware.AuthorizeOptionalBearer, handler.CreateComment)
+			}
 		}
 
 		page := api.Group("/pages")
