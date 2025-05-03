@@ -10,7 +10,7 @@ import (
 func FindAllNews() ([]model.News, error) {
 	var news []model.News
 
-	err := config.DB.Find(&news).Error
+	err := config.DB.Preload("User").Preload("Category").Find(&news).Error
 
 	return news, err
 }
@@ -18,13 +18,13 @@ func FindAllNews() ([]model.News, error) {
 func FindByIDNews(id uuid.UUID) (model.News, error) {
 	var news model.News
 
-	err := config.DB.Where("id = ?", id).First(&news).Error
+	err := config.DB.Preload("User").Preload("Category").Where("id = ?", id).First(&news).Error
 
 	return news, err
 }
 
 func CreateNews(news model.News) error {
-	return config.DB.Create(&news).Error
+	return config.DB.Omit("User").Create(&news).Error
 }
 
 func UpdateNews(id uuid.UUID, news model.News) error {

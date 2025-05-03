@@ -65,9 +65,7 @@ func GetPage(c *gin.Context) {
 func CreatePage(c *gin.Context) {
 	var page dto.CreatePageRequest
 
-	err := c.ShouldBindJSON(&page)
-
-	if err != nil {
+	if err := c.ShouldBindJSON(&page); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid request body",
 		})
@@ -89,7 +87,7 @@ func CreatePage(c *gin.Context) {
 	userID := claimsUser.Sub
 
 	page.UserID = userID
-	err = service.CreatePage(page)
+	err := service.CreatePage(page)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

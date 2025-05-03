@@ -11,8 +11,9 @@ type PageDto struct {
 	CustomURL   string    `json:"custom_url"`
 	Content     string    `json:"content"`
 	IsPublished bool      `json:"is_published"`
-	UserID      uuid.UUID `json:"user_id"`
+	User        UserDto   `json:"user"`
 	CreatedAt   string    `json:"created_at"`
+	UpdatedAt   string    `json:"updated_at"`
 }
 
 type CreatePageRequest struct {
@@ -38,8 +39,9 @@ func PageModelToDto(page model.Page) PageDto {
 		CustomURL:   page.CustomURL,
 		Content:     page.Content,
 		IsPublished: page.IsPublished,
-		UserID:      page.UserID,
-		CreatedAt:   page.CreatedAt.String(),
+		User:        UserModelToDto(page.User),
+		CreatedAt:   page.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt:   page.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }
 

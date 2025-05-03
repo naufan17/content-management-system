@@ -11,6 +11,7 @@ type Page struct {
 	gorm.Model
 	ID          uuid.UUID      `json:"id" gorm:"type:char(36);not null"`
 	UserID      uuid.UUID      `json:"user_id" gorm:"type:char(36);not null"`
+	User        User           `json:"user" gorm:"foreignKey:UserID;references:ID"`
 	Title       string         `json:"title" gorm:"type:varchar(255);not null"`
 	CustomURL   string         `json:"custom_url" gorm:"type:varchar(255);not null"`
 	Content     string         `json:"content" gorm:"type:text;not null"`

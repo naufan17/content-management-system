@@ -10,7 +10,7 @@ import (
 func FindAllPage() ([]model.Page, error) {
 	var pages []model.Page
 
-	err := config.DB.Find(&pages).Error
+	err := config.DB.Preload("User").Find(&pages).Error
 
 	return pages, err
 }
@@ -18,13 +18,13 @@ func FindAllPage() ([]model.Page, error) {
 func FindByIDPage(id uuid.UUID) (model.Page, error) {
 	var page model.Page
 
-	err := config.DB.Where("id = ?", id).First(&page).Error
+	err := config.DB.Preload("User").Where("id = ?", id).First(&page).Error
 
 	return page, err
 }
 
 func CreatePage(page model.Page) error {
-	return config.DB.Create(&page).Error
+	return config.DB.Omit("User").Create(&page).Error
 }
 
 func UpdatePage(id uuid.UUID, page model.Page) error {

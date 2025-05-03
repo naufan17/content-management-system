@@ -6,12 +6,13 @@ import (
 )
 
 type NewsDto struct {
-	ID         uuid.UUID `json:"id"`
-	Title      string    `json:"title"`
-	Content    string    `json:"content"`
-	UserID     uuid.UUID `json:"user_id"`
-	CategoryID uuid.UUID `json:"category_id"`
-	CreatedAt  string    `json:"created_at"`
+	ID        uuid.UUID       `json:"id"`
+	Title     string          `json:"title"`
+	Content   string          `json:"content"`
+	User      UserDto         `json:"user"`
+	Category  CategoryNameDto `json:"category"`
+	CreatedAt string          `json:"created_at"`
+	UpdatedAt string          `json:"updated_at"`
 }
 
 type CreateNewsRequest struct {
@@ -30,12 +31,13 @@ type UpdateNewsRequest struct {
 
 func NewsModelToDto(news model.News) NewsDto {
 	return NewsDto{
-		ID:         news.ID,
-		Title:      news.Title,
-		Content:    news.Content,
-		UserID:     news.UserID,
-		CategoryID: news.CategoryID,
-		CreatedAt:  news.CreatedAt.Format("2006-01-02 15:04:05"),
+		ID:        news.ID,
+		Title:     news.Title,
+		Content:   news.Content,
+		User:      UserModelToDto(news.User),
+		Category:  CategoryNameModelToDto(news.Category),
+		CreatedAt: news.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt: news.UpdatedAt.Format("2006-01-02 15:04:05"),
 	}
 }
 

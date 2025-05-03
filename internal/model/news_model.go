@@ -11,7 +11,9 @@ type News struct {
 	gorm.Model
 	ID         uuid.UUID      `json:"id" gorm:"type:char(36);not null"`
 	UserID     uuid.UUID      `json:"user_id" gorm:"type:char(36);not null"`
+	User       User           `json:"user" gorm:"foreignKey:UserID;references:ID"`
 	CategoryID uuid.UUID      `json:"category_id" gorm:"type:char(36);not null"`
+	Category   Category       `json:"category" gorm:"foreignKey:CategoryID;references:ID"`
 	Title      string         `json:"title" gorm:"type:varchar(255);not null"`
 	Content    string         `json:"content" gorm:"type:text;not null"`
 	CreatedAt  time.Time      `json:"created_at" gorm:"autoCreateTime;not null"`
