@@ -134,18 +134,10 @@ func UpdateNews(c *gin.Context) {
 		return
 	}
 
-	userID := c.MustGet("claimsUser").(*utils.Claims).Sub.String()
-	parsedUserID, err := uuid.Parse(userID)
+	claimsUser := c.MustGet("claimsUser").(*utils.Claims)
+	userID := claimsUser.Sub
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to parse user ID",
-		})
-
-		return
-	}
-
-	news.UserID = parsedUserID
+	news.UserID = userID
 	err = service.UpdateNews(uuidID, news)
 
 	if err != nil {
@@ -173,18 +165,10 @@ func DeleteNews(c *gin.Context) {
 		return
 	}
 
-	userID := c.MustGet("claimsUser").(*utils.Claims).Sub.String()
-	parsedUserID, err := uuid.Parse(userID)
+	claimsUser := c.MustGet("claimsUser").(*utils.Claims)
+	userID := claimsUser.Sub
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to parse user ID",
-		})
-
-		return
-	}
-
-	err = service.DeleteNews(uuidID, parsedUserID)
+	err = service.DeleteNews(uuidID, userID)
 
 	if err != nil {
 		if err.Error() == "not found" {

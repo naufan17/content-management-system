@@ -1,14 +1,19 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/naufan17/content-management-system/internal/handler"
 	"github.com/naufan17/content-management-system/internal/middleware"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func RegisterRoutes(r *gin.Engine) {
-	api := r.Group("/api")
+func RegisterRoutes(router *gin.Engine) {
+	api := router.Group("/api")
 	{
 		auth := api.Group("/auth")
 		{
@@ -42,4 +47,18 @@ func RegisterRoutes(r *gin.Engine) {
 			page.DELETE("/:id", middleware.AuthorizeBearer, handler.DeletePage)
 		}
 	}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "resource not found",
+		})
+	})
+
+	router.NoMethod(func(c *gin.Context) {
+		c.JSON(http.StatusMethodNotAllowed, gin.H{
+			"error": "method not allowed",
+		})
+	})
 }

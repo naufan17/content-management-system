@@ -12,10 +12,11 @@ func AuthorizeBearer(c *gin.Context) {
 	authHeader := c.GetHeader("Authorization")
 
 	if !strings.HasPrefix(authHeader, "Bearer ") {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-			"error": "authorization header format must be Bearer {token}",
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "authorization header is required",
 		})
 
+		c.Abort()
 		return
 	}
 
@@ -23,7 +24,7 @@ func AuthorizeBearer(c *gin.Context) {
 	claims, err := utils.ValidateJWT(token)
 
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+		c.JSON(http.StatusUnauthorized, gin.H{
 			"error": "invalid token",
 		})
 

@@ -3,9 +3,10 @@ package seeders
 import (
 	"log"
 
-	"github.com/naufan17/content-management-system/internal/model"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
+
+	"github.com/naufan17/content-management-system/internal/model"
 )
 
 func SeedUsers(db *gorm.DB) {

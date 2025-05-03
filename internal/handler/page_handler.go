@@ -85,8 +85,10 @@ func CreatePage(c *gin.Context) {
 		return
 	}
 
-	claimUser := c.MustGet("claimsUser").(*utils.Claims)
-	page.UserID = claimUser.Sub
+	claimsUser := c.MustGet("claimsUser").(*utils.Claims)
+	userID := claimsUser.Sub
+
+	page.UserID = userID
 	err = service.CreatePage(page)
 
 	if err != nil {
@@ -136,18 +138,10 @@ func UpdatePage(c *gin.Context) {
 		return
 	}
 
-	userID := c.MustGet("claimsUser").(*utils.Claims).Sub.String()
-	parsedUserID, err := uuid.Parse(userID)
+	claimsUser := c.MustGet("claimsUser").(*utils.Claims)
+	userID := claimsUser.Sub
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to parse user ID",
-		})
-
-		return
-	}
-
-	page.UserID = parsedUserID
+	page.UserID = userID
 	err = service.UpdatePage(uuidID, page)
 
 	if err != nil {
@@ -175,18 +169,10 @@ func DeletePage(c *gin.Context) {
 		return
 	}
 
-	userID := c.MustGet("claimsUser").(*utils.Claims).Sub.String()
-	parsedUserID, err := uuid.Parse(userID)
+	claimsUser := c.MustGet("claimsUser").(*utils.Claims)
+	userID := claimsUser.Sub
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "failed to parse user ID",
-		})
-
-		return
-	}
-
-	err = service.DeletePage(uuidID, parsedUserID)
+	err = service.DeletePage(uuidID, userID)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{

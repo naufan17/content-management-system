@@ -10,7 +10,7 @@ const docTemplate = `
 	"info": {
 		"title": "{{.Title}}",
 		"version": "{{.Version}}",
-		"description": "{{escape .Description}}",
+		"description": "{{escape .Description}}"
 	},
 	"host": "{{.Host}}",
 	"basePath": "{{.BasePath}}",
@@ -52,7 +52,7 @@ const docTemplate = `
 				"tags": ["Auth"],
 				"parameters": [
 					{
-						"name": "email",
+						"name": "username",
 						"in": "body",
 						"required": true,
 						"schema": {
@@ -130,6 +130,285 @@ const docTemplate = `
 				}
 			}
 		},
+		"/api/categories": {
+			"get": {
+				"summary": "Get all categories",
+				"tags": ["Category"],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Get all categories",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											}
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Categories not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Error getting categories",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"summary": "Create new category",
+				"tags": ["Category"],
+				"parameters": [
+					{
+						"name": "category",
+						"in": "body",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Category created",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad request",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Error creating category",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/categories/{id}": {
+			"get": {
+				"summary": "Get category by id",
+				"tags": ["Category"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Get category by id",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Category not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Error getting category",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"summary": "Update category by id",
+				"tags": ["Category"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					},
+					{
+						"name": "category",
+						"in": "body",
+						"required": true,
+						"schema": {
+							"type": "object",
+							"properties": {
+								"name": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Category updated",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "string"
+										},
+										"name": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"summary": "Delete category by id",
+				"tags": ["Category"],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"type": "string"
+					}
+				],
+				"produces": [
+					"application/json"
+				],
+				"responses": {
+					"200": {
+						"description": "Category deleted",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"data": {
+									"type": "object"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "Category not found",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Error deleting category",
+						"schema": {
+							"type": "object",
+							"properties": {
+								"error": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 }`
 

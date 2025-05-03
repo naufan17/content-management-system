@@ -51,9 +51,13 @@ func ValidateJWT(tokenString string) (*Claims, error) {
 		return jwtAccessSecret, nil
 	})
 
-	if claims, ok := token.Claims.(*Claims); !ok && !token.Valid {
-		return claims, nil
+	if err != nil {
+		return nil, err
 	}
 
-	return nil, err
+	if !token.Valid {
+		return nil, jwt.ErrSignatureInvalid
+	}
+
+	return claims, nil
 }
