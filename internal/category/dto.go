@@ -9,11 +9,11 @@ type CategoryDto struct {
 	Name string    `json:"name"`
 }
 
-type CreateCategoryDto struct {
+type CreateCategoryRequest struct {
 	Name string `json:"name" validate:"required,max=50"`
 }
 
-type UpdateCategoryDto struct {
+type UpdateCategoryRequest struct {
 	Name string `json:"name" validate:"required,max=50"`
 }
 
@@ -24,13 +24,13 @@ func CategoryModelToDto(category Category) CategoryDto {
 	}
 }
 
-func CreateCategoryDtoToModel(category CreateCategoryDto) Category {
+func CreateCategoryDtoToModel(category CreateCategoryRequest) Category {
 	return Category{
 		Name: category.Name,
 	}
 }
 
-func UpdateCategoryDtoToModel(category UpdateCategoryDto) Category {
+func UpdateCategoryDtoToModel(category UpdateCategoryRequest) Category {
 	return Category{
 		Name: category.Name,
 	}

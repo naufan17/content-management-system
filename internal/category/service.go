@@ -9,8 +9,8 @@ import (
 type CategoryService interface {
 	GetCategories() ([]CategoryDto, error)
 	GetCategory(id uuid.UUID) (CategoryDto, error)
-	CreateCategory(category CreateCategoryDto) error
-	UpdateCategory(id uuid.UUID, category UpdateCategoryDto) error
+	CreateCategory(category CreateCategoryRequest) error
+	UpdateCategory(id uuid.UUID, category UpdateCategoryRequest) error
 	DeleteCategory(id uuid.UUID) error
 }
 
@@ -50,7 +50,7 @@ func (s *categoryService) GetCategory(id uuid.UUID) (CategoryDto, error) {
 	return CategoryModelToDto(category), nil
 }
 
-func (s *categoryService) CreateCategory(category CreateCategoryDto) error {
+func (s *categoryService) CreateCategory(category CreateCategoryRequest) error {
 	err := s.categoryRepository.Create(CreateCategoryDtoToModel(category))
 
 	if err != nil {
@@ -60,7 +60,7 @@ func (s *categoryService) CreateCategory(category CreateCategoryDto) error {
 	return nil
 }
 
-func (s *categoryService) UpdateCategory(id uuid.UUID, category UpdateCategoryDto) error {
+func (s *categoryService) UpdateCategory(id uuid.UUID, category UpdateCategoryRequest) error {
 	_, err := s.categoryRepository.FindByID(id)
 
 	if err != nil {

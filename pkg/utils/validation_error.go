@@ -25,6 +25,20 @@ func ParseValidationError(err validator.ValidationErrors) map[string]string {
 			} else if v.Tag() == "min" {
 				errorMessage[v.Field()] = "password must be at least 10 characters"
 			}
+		case "Title":
+			if v.Tag() == "required" {
+				errorMessage[v.Field()] = "title is required"
+			} else if v.Tag() == "max" {
+				errorMessage[v.Field()] = "title must be at most 100 characters"
+			}
+		case "Content":
+			if v.Tag() == "required" {
+				errorMessage[v.Field()] = "content is required"
+			}
+		case "CategoryID":
+			if v.Tag() == "required" {
+				errorMessage[v.Field()] = "category_id is required"
+			}
 		}
 	}
 

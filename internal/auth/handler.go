@@ -21,7 +21,7 @@ func NewHandler(authService AuthService) *Handler {
 }
 
 func (h *Handler) Login(c *gin.Context) {
-	var user LoginDto
+	var user LoginRequest
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

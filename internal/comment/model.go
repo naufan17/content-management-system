@@ -1,4 +1,4 @@
-package news
+package comment
 
 import (
 	"time"

@@ -30,6 +30,12 @@ func (h *Handler) GetCategories(c *gin.Context) {
 		})
 
 		return
+	} else if len(categories) == 0 {
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "categories not found",
+		})
+
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -65,7 +71,7 @@ func (h *Handler) GetCategory(c *gin.Context) {
 }
 
 func (h *Handler) CreateCategory(c *gin.Context) {
-	var category CreateCategoryDto
+	var category CreateCategoryRequest
 
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -112,7 +118,7 @@ func (h *Handler) UpdateCategory(c *gin.Context) {
 		return
 	}
 
-	var category UpdateCategoryDto
+	var category UpdateCategoryRequest
 
 	if err := c.ShouldBindJSON(&category); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

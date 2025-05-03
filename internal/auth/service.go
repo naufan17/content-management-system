@@ -7,7 +7,7 @@ import (
 )
 
 type AuthService interface {
-	LoginUser(user LoginDto) (AccessTokenDto, error)
+	LoginUser(user LoginRequest) (LoginResponse, error)
 }
 
 type authService struct {
@@ -20,24 +20,24 @@ func NewAuthService(userRepository UserRepository) AuthService {
 	}
 }
 
-func (s *authService) LoginUser(user LoginDto) (AccessTokenDto, error) {
+func (s *authService) LoginUser(user LoginRequest) (LoginResponse, error) {
 	userFromDB, err := s.userRepository.FindByUsername(user.Username)
 
 	if err != nil {
-		return AccessTokenDto{}, errors.New("not found")
+		return LoginResponse{}, errors.New("not found")
 	}
 
 	if !utils.ComparePassword(user.Password, userFromDB.Password) {
-		return AccessTokenDto{}, errors.New("unauthorized")
+		return LoginResponse{}, errors.New("unauthorized")
 	}
 
 	accessAccessToken, accessExpiresIn, accessTokenType, err := utils.GenerateJWT(userFromDB.ID)
 
 	if err != nil {
-		return AccessTokenDto{}, errors.New("internal server error")
+		return LoginResponse{}, errors.New("internal server error")
 	}
 
-	return AccessTokenDto{
+	return LoginResponse{
 		AccessToken: accessAccessToken,
 		ExpiresIn:   accessExpiresIn,
 		TokenType:   accessTokenType,
