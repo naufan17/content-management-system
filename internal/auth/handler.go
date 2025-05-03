@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 
-	"github.com/naufan17/content-management-system/pkg/config"
+	"github.com/naufan17/content-management-system/config"
 	"github.com/naufan17/content-management-system/pkg/utils"
 )
 

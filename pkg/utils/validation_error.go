@@ -39,6 +39,24 @@ func ParseValidationError(err validator.ValidationErrors) map[string]string {
 			if v.Tag() == "required" {
 				errorMessage[v.Field()] = "category_id is required"
 			}
+		case "CustomURL":
+			if v.Tag() == "required" {
+				errorMessage[v.Field()] = "custom_url is required"
+			} else if v.Tag() == "max" {
+				errorMessage[v.Field()] = "custom_url must be at most 50 characters"
+			} else if v.Tag() == "url" {
+				errorMessage[v.Field()] = "custom_url must be a valid url"
+			}
+		case "IsPublished":
+			if v.Tag() == "bool" {
+				errorMessage[v.Field()] = "is_published must be boolean"
+			}
+		case "Comment":
+			if v.Tag() == "required" {
+				errorMessage[v.Field()] = "comment is required"
+			} else if v.Tag() == "max" {
+				errorMessage[v.Field()] = "comment must be at most 100 characters"
+			}
 		}
 	}
 

@@ -7,7 +7,7 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 
-	"github.com/naufan17/content-management-system/pkg/config"
+	"github.com/naufan17/content-management-system/config"
 	"github.com/naufan17/content-management-system/pkg/utils"
 )
 

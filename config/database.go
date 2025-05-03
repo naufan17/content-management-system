@@ -4,6 +4,12 @@ import (
 	"log"
 	"strconv"
 
+	// "github.com/naufan17/content-management-system/database/seeders"
+	// "github.com/naufan17/content-management-system/internal/auth"
+	// "github.com/naufan17/content-management-system/internal/category"
+	// "github.com/naufan17/content-management-system/internal/comment"
+	// "github.com/naufan17/content-management-system/internal/news"
+	// "github.com/naufan17/content-management-system/internal/page"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -58,8 +64,14 @@ func ConnectDB() *gorm.DB {
 	return db
 }
 
-// func MigrateDB(db *gorm.DB) {
-// 	err := db.AutoMigrate(User{}, Page{}, Category{}, News{}, Comment{})
+func MigrateDB(db *gorm.DB) {
+	err := db.AutoMigrate(
+		&auth.User{},
+		&category.Category{},
+		&page.Page{},
+		&news.News{},
+		&comment.Comment{},
+	)
 
 // 	if err != nil {
 // 		log.Fatal("Failed to migrate database", err)

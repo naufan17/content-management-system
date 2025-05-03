@@ -19,6 +19,22 @@ const docTemplate = `
 			"name": "Auth",
 			"description": "Authentication management"
 		},
+		{
+			"name": "Category",
+			"description": "Category management"
+		},
+		{
+			"name": "News",
+			"description": "News management"
+		},
+		{
+			"name": "Comment",
+			"description": "Comment management"
+		},
+		{
+			"name": "Page",
+			"description": "Page management"
+		}
 	],
 	"components": {
 		"securitySchemes": {

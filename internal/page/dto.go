@@ -18,16 +18,16 @@ type CreatePageRequest struct {
 	Title       string    `json:"title" validate:"required,max=100"`
 	Content     string    `json:"content" validate:"required"`
 	UserID      uuid.UUID `json:"user_id"`
-	CustomURL   string    `json:"custom_url" validate:"required"`
-	IsPublished bool      `json:"is_published"`
+	CustomURL   string    `json:"custom_url" validate:"required,max=100,url"`
+	IsPublished bool      `json:"is_published" validate:"required" default:"true"`
 }
 
 type UpdatePageRequest struct {
 	Title       string    `json:"title" validate:"required,max=100"`
 	Content     string    `json:"content" validate:"required"`
 	UserID      uuid.UUID `json:"user_id"`
-	CustomURL   string    `json:"custom_url" validate:"required"`
-	IsPublished bool      `json:"is_published"`
+	CustomURL   string    `json:"custom_url" validate:"required,max=100,url"`
+	IsPublished bool      `json:"is_published" validate:"required" default:"true"`
 }
 
 func PageModelToDto(page Page) PageDto {
